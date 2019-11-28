@@ -1,2 +1,4 @@
-# github.com/aaronland/go-string v0.1.0
+# github.com/aaronland/go-roster v0.0.1
+github.com/aaronland/go-roster
+# github.com/aaronland/go-string v0.1.1
 github.com/aaronland/go-string/random

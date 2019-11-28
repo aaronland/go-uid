@@ -2,12 +2,9 @@ package uid
 
 import (
 	"context"
-	"log"
 )
 
 func init() {
-
-	log.Println("WHAT")
 	ctx := context.Background()
 	pr := NewNullProvider()
 	RegisterProvider(ctx, "null", pr)

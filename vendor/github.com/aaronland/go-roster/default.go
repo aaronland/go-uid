@@ -1,9 +1,8 @@
-package driver
+package roster
 
 import (
 	"context"
 	"errors"
-	"net/url"
 	"sort"
 	"strings"
 	"sync"
@@ -28,15 +27,7 @@ func NewDefaultRoster() (Roster, error) {
 	return dr, nil
 }
 
-func (dr *DefaultRoster) Driver(ctx context.Context, uri string) (interface{}, error) {
-
-	u, err := url.Parse(uri)
-
-	if err != nil {
-		return nil, err
-	}
-
-	name := u.Scheme
+func (dr *DefaultRoster) Driver(ctx context.Context, name string) (interface{}, error) {
 
 	nrml_name := dr.NormalizeName(ctx, name)
 

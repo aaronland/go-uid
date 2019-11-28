@@ -30,7 +30,7 @@ func (pr *YMDProvider) Open(ctx context.Context, uri string) error {
 	return nil
 }
 
-func (pr *YMDProvider) URI(args ...interface{}) (UID, error) {
+func (pr *YMDProvider) UID(args ...interface{}) (UID, error) {
 
 	date := time.Now()
 

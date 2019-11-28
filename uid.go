@@ -2,28 +2,37 @@ package uid
 
 import (
 	"context"
-	"github.com/aaronland/go-uid/driver"
+	"github.com/aaronland/go-roster"
 	"net/url"
-	"log"
 )
 
-var roster driver.Roster
+var providers roster.Roster
 
-func init() {
+func ensureRoster() error {
 
-	log.Println("UID INIT")
-	r, err := driver.NewDefaultRoster()
+	if providers == nil {
+		
+		r, err := roster.NewDefaultRoster()
 
-	if err != nil {
-		panic(err)
+		if err != nil {
+			return err
+		}
+
+		providers = r
 	}
 
-	log.Println("HELLO", r)
-	roster = r
+	return nil
 }
 
 func RegisterProvider(ctx context.Context, name string, pr Provider) error {
-	return roster.Register(ctx, name, pr)
+
+	err := ensureRoster()
+
+	if err != nil {
+		return err
+	}
+
+	return providers.Register(ctx, name, pr)
 }
 
 func NewProvider(ctx context.Context, uri string) (Provider, error) {
@@ -36,13 +45,14 @@ func NewProvider(ctx context.Context, uri string) (Provider, error) {
 
 	scheme := u.Scheme
 
-	i, err := roster.Driver(ctx, scheme)
+	i, err := providers.Driver(ctx, scheme)
 
 	if err != nil {
 		return nil, err
 	}
 
 	pr := i.(Provider)
+	
 	err = pr.Open(ctx, uri)
 
 	if err != nil {
