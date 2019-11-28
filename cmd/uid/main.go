@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/aaronland/go-uid"
@@ -9,11 +10,12 @@ import (
 
 func main() {
 
-	dsn := flag.String("dsn", "", "...")
+	uri := flag.String("uri", "", "...")
 
 	flag.Parse()
 
-	pr, err := uid.NewUIDProviderWithDSN(*dsn)
+	ctx := context.Background()
+	pr, err := uid.NewProvider(ctx, *uri)
 
 	if err != nil {
 		log.Fatal(err)

@@ -1,25 +1,32 @@
 package uid
 
 import (
+	"context"
 	"github.com/aaronland/go-string/random"
 )
 
-type RandomUIDProvider struct {
+func init() {
+	ctx := context.Background()	
+	pr := NewRandomProvider()
+	RegisterProvider(ctx, "random", pr)
+}
+
+type RandomProvider struct {
 	Provider
 }
 
-func NewRandomUIDProvider() (Provider, error) {
+// type RandomUID is a type StringUID
 
-	pr := RandomUIDProvider{}
-	return &pr, nil
+func NewRandomProvider() Provider {
+	pr := &RandomProvider{}
+	return pr
 }
 
-func (pr *RandomUIDProvider) UID(...interface{}) (UID, error) {
-
-	return NewRandomUID()
+func (pr *RandomProvider) Open(ctx context.Context, uri string) error {
+	return nil
 }
 
-func NewRandomUID() (UID, error) {
+func (pr *RandomProvider) UID(...interface{}) (UID, error) {
 
 	opts := random.DefaultOptions()
 	opts.Length = 16

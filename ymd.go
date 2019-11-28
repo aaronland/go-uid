@@ -1,10 +1,17 @@
 package uid
 
 import (
+	"context"
 	"time"
 )
 
-type YMDUIDProvider struct {
+func init() {
+	ctx := context.Background()
+	pr := NewYMDProvider()
+	RegisterProvider(ctx, "ymd", pr)
+}
+
+type YMDProvider struct {
 	Provider
 }
 
@@ -13,41 +20,43 @@ type YMDUID struct {
 	date time.Time
 }
 
-func NewYMDUIDProvider() (Provider, error) {
+func NewYMDProvider() Provider {
 
-	pr := YMDUIDProvider{}
-	return &pr, nil
+	pr := &YMDProvider{}
+	return pr
 }
 
-func (pr *YMDUIDProvider) UID(args ...interface{}) (UID, error) {
+func (pr *YMDProvider) Open(ctx context.Context, uri string) error {
+	return nil
+}
+
+func (pr *YMDProvider) URI(args ...interface{}) (UID, error) {
 
 	date := time.Now()
 
 	if len(args) == 1 {
-		date = args[0].(time.Time)
+
+		str_date := args[0].(string)
+
+		t, err := time.Parse("20060102", str_date)
+
+		if err != nil {
+			return nil, err
+		}
+
+		date = t
 	}
 
 	return NewYMDUID(date)
 }
 
-func NewYMDUIDFromString(str_date string) (UID, error) {
-
-	t, err := time.Parse("20060102", str_date)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return NewYMDUID(t)
-}
-
 func NewYMDUID(date time.Time) (UID, error) {
 
-	u := YMDUID{
+	u := &YMDUID{
 		date: date,
 	}
 
-	return &u, nil
+	return u, nil
 }
 
 func (u *YMDUID) String() string {

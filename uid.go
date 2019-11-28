@@ -1,34 +1,62 @@
 package uid
 
 import (
-	"errors"
-	"github.com/aaronland/go-string/dsn"
+	"context"
+	"github.com/aaronland/go-uid/driver"
+	"net/url"
+	"log"
 )
 
-type Provider interface {
-	UID(...interface{}) (UID, error) // NOT SURE ABOUT THIS...
+var roster driver.Roster
+
+func init() {
+
+	log.Println("UID INIT")
+	r, err := driver.NewDefaultRoster()
+
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("HELLO", r)
+	roster = r
 }
 
-type UID interface {
-	String() string
+func RegisterProvider(ctx context.Context, name string, pr Provider) error {
+	return roster.Register(ctx, name, pr)
 }
 
-func NewUIDProviderWithDSN(str_dsn string) (Provider, error) {
+func NewProvider(ctx context.Context, uri string) (Provider, error) {
 
-	dsn_map, err := dsn.StringToDSNWithKeys(str_dsn, "provider")
+	u, err := url.Parse(uri)
 
 	if err != nil {
 		return nil, err
 	}
 
-	switch dsn_map["provider"] {
+	scheme := u.Scheme
 
-	case "artisanal":
-		return NewArtisanalProxyUIDProvider(str_dsn)
-	case "ymd":
-		return NewYMDUIDProvider()
-	default:
-		return nil, errors.New("Invalid or unsupported UID provider")
+	i, err := roster.Driver(ctx, scheme)
 
+	if err != nil {
+		return nil, err
 	}
+
+	pr := i.(Provider)
+	err = pr.Open(ctx, uri)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pr, nil
+}
+
+type Provider interface {
+	Open(context.Context, string) error
+	UID(...interface{}) (UID, error) // NOT SURE ABOUT THIS...
+}
+
+type UID interface {
+	String() string
 }
