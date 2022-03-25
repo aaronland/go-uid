@@ -6,6 +6,15 @@ import (
 	"net/url"
 )
 
+type Provider interface {
+	Open(context.Context, string) error
+	UID(...interface{}) (UID, error) // NOT SURE ABOUT THIS...
+}
+
+type UID interface {
+	String() string
+}
+
 var providers roster.Roster
 
 func ensureRoster() error {
@@ -60,13 +69,4 @@ func NewProvider(ctx context.Context, uri string) (Provider, error) {
 	}
 
 	return pr, nil
-}
-
-type Provider interface {
-	Open(context.Context, string) error
-	UID(...interface{}) (UID, error) // NOT SURE ABOUT THIS...
-}
-
-type UID interface {
-	String() string
 }

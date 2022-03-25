@@ -1,6 +1,6 @@
 module github.com/aaronland/go-uid
 
-go 1.12
+go 1.18
 
 require (
 	github.com/aaronland/go-roster v0.0.2
