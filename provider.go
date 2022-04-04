@@ -3,12 +3,12 @@ package uid
 import (
 	"context"
 	"github.com/aaronland/go-roster"
+	_ "golang.org/x/exp/constraints"
 	"net/url"
 )
 
 type Provider interface {
-	Open(context.Context, string) error
-	UID(...interface{}) (UID, error)
+	New() T
 }
 
 type ProviderInitializationFunc func(ctx context.Context, uri string) (Provider, error)
