@@ -1,63 +1,15 @@
 package uid
 
-import (
-	"context"
-	"errors"
-	"net/url"
-)
-
-func init() {
-	ctx := context.Background()
-	RegisterProvider(ctx, "string", NewStringProvider)
+type StringProvider[T uid] struct {
+	s T
 }
 
-type StringProvider struct {
-	Provider
-	string string
+func (c *StringProvider[T]) Value() T {
+	return c.s
 }
 
-type StringUID struct {
-	UID
-	string string
-}
 
-func NewStringProvider(ctx context.Context, uri string) (Provider, error) {
-
-	u, err := url.Parse(uri)
-
-	if err != nil {
-		return nil, err
-	}
-
-	q := u.Query()
-	s := q.Get("string")
-
-	if s == "" {
-		return nil, errors.New("Empty string")
-	}
-
-	pr := &StringProvider{
-		string: s,
-	}
-
+func NewStringProvider[T uid](s T) (UID[T], error) {
+	pr := &StringProvider[T]{s: s}
 	return pr, nil
-}
-
-func (pr *StringProvider) UID(...interface{}) (UID, error) {
-	return NewStringUID(pr.string)
-}
-
-func NewStringUID(s string) (UID, error) {
-
-	u := StringUID{
-		string: s,
-	}
-
-	return &u, nil
-}
-
-// where is UID() ?
-
-func (u *StringUID) String() string {
-	return u.string
 }
