@@ -8,8 +8,7 @@ import (
 
 func init() {
 	ctx := context.Background()
-	pr := NewStringProvider()
-	RegisterProvider(ctx, "string", pr)
+	RegisterProvider(ctx, "string", NewStringProvider)
 }
 
 type StringProvider struct {
@@ -22,28 +21,26 @@ type StringUID struct {
 	string string
 }
 
-func NewStringProvider() Provider {
-	pr := &StringProvider{}
-	return pr
-}
-
-func (pr *StringProvider) Open(ctx context.Context, uri string) error {
+func NewStringProvider(ctx context.Context, uri string) (Provider, error) {
 
 	u, err := url.Parse(uri)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	q := u.Query()
 	s := q.Get("string")
 
 	if s == "" {
-		return errors.New("Empty string")
+		return nil, errors.New("Empty string")
 	}
 
-	pr.string = s
-	return nil
+	pr := &StringProvider{
+		string: s,
+	}
+
+	return pr, nil
 }
 
 func (pr *StringProvider) UID(...interface{}) (UID, error) {

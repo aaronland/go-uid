@@ -7,8 +7,7 @@ import (
 
 func init() {
 	ctx := context.Background()
-	pr := NewYMDProvider()
-	RegisterProvider(ctx, "ymd", pr)
+	RegisterProvider(ctx, "ymd", NewYMDProvider)
 }
 
 type YMDProvider struct {
@@ -20,14 +19,9 @@ type YMDUID struct {
 	date time.Time
 }
 
-func NewYMDProvider() Provider {
-
+func NewYMDProvider(ctx context.Context, uri string) (Provider, error) {
 	pr := &YMDProvider{}
-	return pr
-}
-
-func (pr *YMDProvider) Open(ctx context.Context, uri string) error {
-	return nil
+	return pr, nil
 }
 
 func (pr *YMDProvider) UID(args ...interface{}) (UID, error) {
