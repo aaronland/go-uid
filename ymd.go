@@ -2,13 +2,15 @@ package uid
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
+const YMD_SCHEME string = "ymd"
+
 func init() {
 	ctx := context.Background()
-	pr := NewYMDProvider()
-	RegisterProvider(ctx, "ymd", pr)
+	RegisterProvider(ctx, YMD_SCHEME, NewYMDProvider)
 }
 
 type YMDProvider struct {
@@ -20,14 +22,9 @@ type YMDUID struct {
 	date time.Time
 }
 
-func NewYMDProvider() Provider {
-
+func NewYMDProvider(ctx context.Context, uri string) (Provider, error) {
 	pr := &YMDProvider{}
-	return pr
-}
-
-func (pr *YMDProvider) Open(ctx context.Context, uri string) error {
-	return nil
+	return pr, nil
 }
 
 func (pr *YMDProvider) UID(args ...interface{}) (UID, error) {
@@ -41,7 +38,7 @@ func (pr *YMDProvider) UID(args ...interface{}) (UID, error) {
 		t, err := time.Parse("20060102", str_date)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse time %s, %w", str_date, err)
 		}
 
 		date = t
@@ -59,7 +56,7 @@ func NewYMDUID(date time.Time) (UID, error) {
 	return u, nil
 }
 
-func (u *YMDUID) String() string {
+func (u *YMDUID) Value() any {
 
 	return u.date.Format("20060102")
 }

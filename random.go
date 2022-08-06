@@ -5,25 +5,20 @@ import (
 	"github.com/aaronland/go-string/random"
 )
 
+const RANDOM_SCHEME string = "random"
+
 func init() {
-	ctx := context.Background()	
-	pr := NewRandomProvider()
-	RegisterProvider(ctx, "random", pr)
+	ctx := context.Background()
+	RegisterProvider(ctx, RANDOM_SCHEME, NewRandomProvider)
 }
 
 type RandomProvider struct {
 	Provider
 }
 
-// type RandomUID is a type StringUID
-
-func NewRandomProvider() Provider {
+func NewRandomProvider(ctx context.Context, uri string) (Provider, error) {
 	pr := &RandomProvider{}
-	return pr
-}
-
-func (pr *RandomProvider) Open(ctx context.Context, uri string) error {
-	return nil
+	return pr, nil
 }
 
 func (pr *RandomProvider) UID(...interface{}) (UID, error) {

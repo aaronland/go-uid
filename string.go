@@ -2,14 +2,13 @@ package uid
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"net/url"
 )
 
 func init() {
 	ctx := context.Background()
-	pr := NewStringProvider()
-	RegisterProvider(ctx, "string", pr)
+	RegisterProvider(ctx, "string", NewStringProvider)
 }
 
 type StringProvider struct {
@@ -22,28 +21,26 @@ type StringUID struct {
 	string string
 }
 
-func NewStringProvider() Provider {
-	pr := &StringProvider{}
-	return pr
-}
-
-func (pr *StringProvider) Open(ctx context.Context, uri string) error {
+func NewStringProvider(ctx context.Context, uri string) (Provider, error) {
 
 	u, err := url.Parse(uri)
 
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("Failed to parse string, %w", err)
 	}
 
 	q := u.Query()
 	s := q.Get("string")
 
 	if s == "" {
-		return errors.New("Empty string")
+		return nil, fmt.Errorf("Empty string")
 	}
 
-	pr.string = s
-	return nil
+	pr := &StringProvider{
+		string: s,
+	}
+
+	return pr, nil
 }
 
 func (pr *StringProvider) UID(...interface{}) (UID, error) {
@@ -59,8 +56,6 @@ func NewStringUID(s string) (UID, error) {
 	return &u, nil
 }
 
-// where is UID() ?
-
-func (u *StringUID) String() string {
+func (u *StringUID) Value() any {
 	return u.string
 }

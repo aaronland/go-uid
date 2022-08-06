@@ -4,10 +4,11 @@ import (
 	"context"
 )
 
+const NULL_SCHEME string = "null"
+
 func init() {
 	ctx := context.Background()
-	pr := NewNullProvider()
-	RegisterProvider(ctx, "null", pr)
+	RegisterProvider(ctx, NULL_SCHEME, NewNullProvider)
 }
 
 type NullProvider struct {
@@ -18,13 +19,9 @@ type NullUID struct {
 	UID
 }
 
-func NewNullProvider() Provider {
+func NewNullProvider(ctx context.Context, uri string) (Provider, error) {
 	pr := &NullProvider{}
-	return pr
-}
-
-func (pr *NullProvider) Open(ctx context.Context, uri string) error {
-	return nil
+	return pr, nil
 }
 
 func (n *NullProvider) UID(...interface{}) (UID, error) {
@@ -36,6 +33,6 @@ func NewNullUID() (UID, error) {
 	return n, nil
 }
 
-func (n *NullUID) String() string {
+func (n *NullUID) value() any {
 	return ""
 }
