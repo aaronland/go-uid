@@ -27,7 +27,7 @@ func NewYMDProvider(ctx context.Context, uri string) (Provider, error) {
 	return pr, nil
 }
 
-func (pr *YMDProvider) UID(args ...interface{}) (UID, error) {
+func (pr *YMDProvider) UID(ctx context.Context, args ...interface{}) (UID, error) {
 
 	date := time.Now()
 
@@ -44,10 +44,10 @@ func (pr *YMDProvider) UID(args ...interface{}) (UID, error) {
 		date = t
 	}
 
-	return NewYMDUID(date)
+	return NewYMDUID(ctx, date)
 }
 
-func NewYMDUID(date time.Time) (UID, error) {
+func NewYMDUID(ctx context.Context, date time.Time) (UID, error) {
 
 	u := &YMDUID{
 		date: date,
@@ -57,6 +57,9 @@ func NewYMDUID(date time.Time) (UID, error) {
 }
 
 func (u *YMDUID) Value() any {
-
 	return u.date.Format("20060102")
+}
+
+func (u *YMDUID) String() string {
+	return fmt.Sprintf("%v", u.Value())
 }

@@ -2,6 +2,7 @@ package uid
 
 import (
 	"context"
+	"fmt"
 	"github.com/aaronland/go-string/random"
 )
 
@@ -21,7 +22,7 @@ func NewRandomProvider(ctx context.Context, uri string) (Provider, error) {
 	return pr, nil
 }
 
-func (pr *RandomProvider) UID(...interface{}) (UID, error) {
+func (pr *RandomProvider) UID(ctx context.Context, args ...interface{}) (UID, error) {
 
 	opts := random.DefaultOptions()
 	opts.Length = 16
@@ -32,8 +33,8 @@ func (pr *RandomProvider) UID(...interface{}) (UID, error) {
 	s, err := random.String(opts)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to generate random string, %w", err)
 	}
 
-	return NewStringUID(s)
+	return NewStringUID(ctx, s)
 }

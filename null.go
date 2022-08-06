@@ -2,6 +2,7 @@ package uid
 
 import (
 	"context"
+	"fmt"
 )
 
 const NULL_SCHEME string = "null"
@@ -24,15 +25,19 @@ func NewNullProvider(ctx context.Context, uri string) (Provider, error) {
 	return pr, nil
 }
 
-func (n *NullProvider) UID(...interface{}) (UID, error) {
-	return NewNullUID()
+func (n *NullProvider) UID(ctx context.Context, args ...interface{}) (UID, error) {
+	return NewNullUID(ctx)
 }
 
-func NewNullUID() (UID, error) {
+func NewNullUID(ctx context.Context) (UID, error) {
 	n := &NullUID{}
 	return n, nil
 }
 
-func (n *NullUID) value() any {
+func (n *NullUID) Value() any {
 	return ""
+}
+
+func (n *NullUID) String() string {
+	return fmt.Sprintf("%v", n.Value())
 }

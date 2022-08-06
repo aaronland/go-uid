@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	uri := flag.String("uri", "", "...")
+	uri := flag.String("uri", "", "A valid aaronland/go-uid URI.")
 
 	flag.Parse()
 
@@ -18,14 +18,14 @@ func main() {
 	pr, err := uid.NewProvider(ctx, *uri)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to create provider, %v", err)
 	}
 
-	id, err := pr.UID()
+	id, err := pr.UID(ctx)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to create UID, %v", err)
 	}
 
-	fmt.Println(id)
+	fmt.Println(id.String())
 }

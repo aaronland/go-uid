@@ -11,7 +11,7 @@ import (
 
 type Provider interface {
 	Open(context.Context, string) error
-	UID(...interface{}) (UID, error)
+	UID(context.Context, ...interface{}) (UID, error)
 }
 
 type UID interface {

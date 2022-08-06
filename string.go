@@ -6,9 +6,11 @@ import (
 	"net/url"
 )
 
+const STRING_SCHEME string = "string"
+
 func init() {
 	ctx := context.Background()
-	RegisterProvider(ctx, "string", NewStringProvider)
+	RegisterProvider(ctx, STRING_SCHEME, NewStringProvider)
 }
 
 type StringProvider struct {
@@ -43,11 +45,11 @@ func NewStringProvider(ctx context.Context, uri string) (Provider, error) {
 	return pr, nil
 }
 
-func (pr *StringProvider) UID(...interface{}) (UID, error) {
-	return NewStringUID(pr.string)
+func (pr *StringProvider) UID(ctx context.Context, args ...interface{}) (UID, error) {
+	return NewStringUID(ctx, pr.string)
 }
 
-func NewStringUID(s string) (UID, error) {
+func NewStringUID(ctx context.Context, s string) (UID, error) {
 
 	u := StringUID{
 		string: s,
@@ -58,4 +60,8 @@ func NewStringUID(s string) (UID, error) {
 
 func (u *StringUID) Value() any {
 	return u.string
+}
+
+func (u *StringUID) String() string {
+	return fmt.Sprintf("%v", u.Value())
 }
