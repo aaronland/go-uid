@@ -25,6 +25,7 @@ type NullUID struct {
 }
 
 // NewNullProvider
+//
 //	null://
 func NewNullProvider(ctx context.Context, uri string) (Provider, error) {
 	pr := &NullProvider{}
