@@ -29,7 +29,11 @@ func (r *MultiUID) String() string {
 	pairs := make([]string, len(r.uids))
 
 	for idx, uid := range r.uids {
-		pairs[idx] = fmt.Sprintf("%T#%s", uid, uid.String())
+
+		uid_t := fmt.Sprintf("%T", uid)
+		label := strings.Replace(uid_t, "*uid.", "", 1)
+
+		pairs[idx] = fmt.Sprintf("%s#%s", label, uid.String())
 	}
 
 	return strings.Join(pairs, " ")
