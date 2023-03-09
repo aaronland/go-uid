@@ -7,5 +7,5 @@ type uid interface {
 }
 
 type Identifier[T uid] interface {
-	Value() T
+	Value() any
 }

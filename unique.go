@@ -4,7 +4,7 @@ type UniqueIdentifier[T uid] struct {
 	value T
 }
 
-func (ui *UniqueIdentifier[T]) Value() T {
+func (ui *UniqueIdentifier[T]) Value() any {
 	return ui.value
 }
 
