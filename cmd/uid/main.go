@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/aaronland/go-uid"
 	"log"
+
+	"github.com/aaronland/go-uid"
 )
 
 func main() {
